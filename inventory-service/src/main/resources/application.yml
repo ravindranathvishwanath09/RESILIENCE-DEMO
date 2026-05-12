@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: inventory-service
+
+# Toggle to simulate slowness or failure for testing
+inventory:
+  simulate-slow-response: false   # set true to simulate 500ms delay (triggers TimeLimiter)
+  simulate-failure: false         # set true to simulate 500 errors (triggers CircuitBreaker)
+  slow-response-delay-ms: 500

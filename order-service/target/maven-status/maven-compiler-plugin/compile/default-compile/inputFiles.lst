@@ -1,0 +1,9 @@
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\model\OrderResponse.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\service\OrderService.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\service\InventoryServiceClient.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\model\OrderRequest.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\controller\OrderController.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\kafka\InventoryCheckProducer.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\OrderServiceApplication.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\model\InventoryResponse.java
+C:\devapps\SpringBoot\resilience-demo\order-service\src\main\java\com\example\orderservice\config\WebClientConfig.java

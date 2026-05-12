@@ -1,0 +1,14 @@
+package com.example.inventoryservice.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class InventoryResponse {
+    private String productId;
+    private boolean available;
+    private int availableQuantity;
+}

@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+inventory:
+  service:
+    url: http://localhost:8081
+
+spring:
+  application:
+    name: order-service
+
+  # ---- Kafka config (comment out if not running Kafka locally) ----
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# ---- Resilience4j configuration ----
+resilience4j:
+
+  # Layer 1: TimeLimiter — 250ms hard timeout on Inventory Service calls
+  timelimiter:
+    instances:
+      inventoryService:
+        timeout-duration: 250ms
+        cancel-running-future: true
+
+  # Layer 2: Retry — max 2 attempts, only on ConnectException (NOT TimeoutException)
+  retry:
+    instances:
+      inventoryService:
+        max-attempts: 2
+        wait-duration: 100ms
+        retry-exceptions:
+          - java.net.ConnectException
+        ignore-exceptions:
+          - java.util.concurrent.TimeoutException
+          - io.github.resilience4j.timelimiter.TimeLimiterConfig
+
+  # Layer 3: CircuitBreaker — opens after 5 failures in a 10-call sliding window
+  circuitbreaker:
+    instances:
+      inventoryService:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        failure-rate-threshold: 50          # opens when 50% of last 10 calls fail
+        slow-call-rate-threshold: 50        # also opens on slow calls
+        slow-call-duration-threshold: 250ms
+        wait-duration-in-open-state: 30s    # stay OPEN for 30s before trying HALF_OPEN
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true
+        record-exceptions:
+          - java.util.concurrent.TimeoutException
+          - java.net.ConnectException
+          - java.io.IOException
+
+  # Layer 4: Bulkhead — dedicated thread pool for Inventory calls
+  bulkhead:
+    instances:
+      inventoryService:
+        max-concurrent-calls: 10           # max 10 concurrent inventory calls
+        max-wait-duration: 10ms            # fail fast if pool is full
+
+# ---- Actuator — expose circuit breaker health + metrics ----
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus, circuitbreakers, retries
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+logging:
+  level:
+    com.example: DEBUG
+    io.github.resilience4j: DEBUG
